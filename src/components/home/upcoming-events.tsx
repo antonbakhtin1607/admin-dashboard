@@ -7,25 +7,21 @@ import { useList } from "@refinedev/core";
 import { DASHBOARD_CALENDAR_UPCOMING_EVENTS_QUERY } from "@/graphql/queries";
 
 const UpcomingEvents = () => {
-
-  const {data, isLoading} = useList({
-      resource: "events",
-      pagination: {
-          pageSize: 5
+  const { data, isLoading } = useList({
+    resource: "events",
+    pagination: {
+      pageSize: 5,
+    },
+    sorters: [
+      {
+        field: "startDate",
+        order: "asc",
       },
-      sorters: [
-          {
-              field: "startDate",
-              order: "asc"
-          }
-      ],
-      meta: {
-        gqlQuery: DASHBOARD_CALENDAR_UPCOMING_EVENTS_QUERY
-      }
-  })
-
-  console.log(data);
-  
+    ],
+    meta: {
+      gqlQuery: DASHBOARD_CALENDAR_UPCOMING_EVENTS_QUERY,
+    },
+  });
 
   return (
     <Card
@@ -71,9 +67,18 @@ const UpcomingEvents = () => {
           }}
         />
       )}
-       {!isLoading && data?.data?.length === 0 && (
-              <span style={{display: "flex", alignItems: "center", justifyContent: "center", height: "220px"}}>No Upcoming Events</span>
-          )}
+      {!isLoading && data?.data?.length === 0 && (
+        <span
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "220px",
+          }}
+        >
+          No Upcoming Events
+        </span>
+      )}
     </Card>
   );
 };

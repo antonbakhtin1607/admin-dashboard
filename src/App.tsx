@@ -23,6 +23,8 @@ import { App as AntdApp } from "antd";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router";
 import Layout from "./components/layout";
 import { resources } from "./config/resources";
+import EditPage from "./pages/company/edit";
+import List from "./pages/tasks/list";
 
 function App() {
   return (
@@ -65,6 +67,10 @@ function App() {
                   <Route path="/companies">
                     <Route index element={<CompanyList />} />
                     <Route path="new" element={<Create />} />
+                    <Route path="edit/:id" element={<EditPage />} />
+                  </Route>
+                  <Route path="/tasks">
+                    <Route index element={<List />} />
                   </Route>
                 </Route>
               </Routes>

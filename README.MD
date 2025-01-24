@@ -1,4 +1,4 @@
-# admin-dashboard
+# Admin Dashboard
 
 <div align="center" style="margin: 30px;">
     <a href="https://refine.dev">
@@ -7,43 +7,84 @@
 </div>
 <br/>
 
-This [Refine](https://github.com/refinedev/refine) project was generated with [create refine-app](https://github.com/refinedev/refine/tree/master/packages/create-refine-app).
+This project is a **React Admin Dashboard** built with [Refine], designed for real-time data visualization, CRM, Kanban, events, and more. It features powerful tools like **Ant Design**, **GraphQL**, and interactive charts to streamline the development of admin panels and internal tools.
+
+## Deploy link
+
+https://admin-dashboard-b9deao609-antons-projects-c4dbbf9a.vercel.app/
+
+## Features
+- **Real-Time Data**: Dynamic updates and synchronization.
+- **Charts**: Data visualization for insights.
+- **Kanban Board**: Task and workflow management.
+- **CRM**: Customer relationship management tools.
+- **Ant Design**: UI components for a polished look.
+- **GraphQL**: Efficient and flexible data fetching.
+- **Events Management**: Schedule and track events.
+- **Refine Framework**: Simplifies authentication, routing, state management, and more.
 
 ## Getting Started
 
-A React Framework for building internal tools, admin panels, dashboards & B2B apps with unmatched flexibility ✨
+Follow these steps to run the project locally.
 
-Refine's hooks and components simplifies the development process and eliminates the repetitive tasks by providing industry-standard solutions for crucial aspects of a project, including authentication, access control, routing, networking, state management, and i18n.
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v14 or later)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
 
-## Available Scripts
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/admin-dashboard.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd admin-dashboard
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+   or
+   ```bash
+   yarn
+   ```
 
-### Running the development server.
-
+### Running the Development Server
+Start the development server:
 ```bash
-    npm run dev
+npm run dev
+```
+or
+```bash
+yarn dev
 ```
 
-### Building for production.
-
+### Building for Production
+Build the project for production:
 ```bash
-    npm run build
+npm run build
+```
+or
+```bash
+yarn build
 ```
 
-### Running the production server.
-
+### Running the Production Server
+Serve the production build:
 ```bash
-    npm run start
+npm run start
+```
+or
+```bash
+yarn start
 ```
 
-## Learn More
-
-To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
-
-- **NestJS Query Data Provider** [Docs](https://refine.dev/docs/data/packages/nestjs-query/)
-- **Ant Design** [Docs](https://refine.dev/docs/ui-frameworks/antd/tutorial/)
-- **React Router** [Docs](https://refine.dev/docs/core/providers/router-provider/)
-- **Custom Auth Provider** [Docs](https://refine.dev/docs/core/providers/auth-provider/)
-
-## License
-
-MIT
+## Technologies Used
+- **React**: UI library for building the dashboard.
+- **Refine**: Framework for admin panels and internal tools.
+- **Ant Design**: UI component library.
+- **GraphQL**: API query language.
+- **Kanban Board**: For task management.
+- **Charts**: Data visualization with dynamic updates.
+- **Events Management**: Scheduling and tracking.
+- **CRM**: Tools for customer management.

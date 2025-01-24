@@ -1,33 +1,38 @@
-import CustomAvatar from "@/components/custom-avatar";
-import { Text } from "@/components/text";
-import { TextIcon } from "@/components/text-icon";
-import { User } from "@/graphql/schema.types";
-import { getDateColor } from "@/utilities";
+import { memo, useMemo } from "react";
+
+import { useDelete, useNavigation } from "@refinedev/core";
+
 import {
   ClockCircleOutlined,
   DeleteOutlined,
   EyeOutlined,
   MoreOutlined,
 } from "@ant-design/icons";
+import type { MenuProps } from "antd";
 import {
   Button,
   Card,
   ConfigProvider,
   Dropdown,
-  MenuProps,
+  Skeleton,
   Space,
   Tag,
   theme,
   Tooltip,
 } from "antd";
 import dayjs from "dayjs";
-import { memo, useMemo } from "react";
+
+import { Text } from "@/components";
+import type { User } from "@/graphql/schema.types";
+import { getDateColor } from "@/utilities";
+import { TextIcon } from "@/components/text-icon";
+import CustomAvatar from "@/components/custom-avatar";
 
 type ProjectCardProps = {
   id: string;
   title: string;
-  dueDate: string;
   updatedAt: string;
+  dueDate?: string;
   users?: {
     id: string;
     name: string;
@@ -35,19 +40,24 @@ type ProjectCardProps = {
   }[];
 };
 
-const ProjectCard = ({ id, title, dueDate, users }: ProjectCardProps) => {
+export const ProjectCard = ({
+  id,
+  title,
+  dueDate,
+  users,
+}: ProjectCardProps) => {
   const { token } = theme.useToken();
+  const { edit } = useNavigation();
+  const { mutate } = useDelete();
 
-  const edit = () => {};
-
-  const dropDownItems = useMemo(() => {
+  const dropdownItems = useMemo(() => {
     const dropdownItems: MenuProps["items"] = [
       {
         label: "View card",
         key: "1",
         icon: <EyeOutlined />,
         onClick: () => {
-          edit();
+          edit("tasks", id, "replace");
         },
       },
       {
@@ -55,9 +65,18 @@ const ProjectCard = ({ id, title, dueDate, users }: ProjectCardProps) => {
         label: "Delete card",
         key: "2",
         icon: <DeleteOutlined />,
-        onClick: () => {},
+        onClick: () => {
+          mutate({
+            resource: "tasks",
+            id,
+            meta: {
+              operation: "task",
+            },
+          });
+        },
       },
     ];
+
     return dropdownItems;
   }, []);
 
@@ -68,7 +87,7 @@ const ProjectCard = ({ id, title, dueDate, users }: ProjectCardProps) => {
 
     return {
       color: getDateColor({ date: dueDate }) as string,
-      text: date.format("MMM DD"),
+      text: date.format("MMM D"),
     };
   }, [dueDate]);
 
@@ -88,18 +107,34 @@ const ProjectCard = ({ id, title, dueDate, users }: ProjectCardProps) => {
       <Card
         size="small"
         title={<Text ellipsis={{ tooltip: title }}>{title}</Text>}
-        onClick={() => edit()}
+        onClick={() => {
+          edit("tasks", id, "replace");
+        }}
         extra={
           <Dropdown
             trigger={["click"]}
-            menu={{ items: dropDownItems }}
+            menu={{
+              items: dropdownItems,
+              onPointerDown: (e) => {
+                e.stopPropagation();
+              },
+              onClick: (e) => {
+                e.domEvent.stopPropagation();
+              },
+            }}
             placement="bottom"
             arrow={{ pointAtCenter: true }}
           >
             <Button
               type="text"
               shape="circle"
-              icon={<MoreOutlined style={{ transform: "rotate(90deg)" }} />}
+              icon={
+                <MoreOutlined
+                  style={{
+                    transform: "rotate(90deg)",
+                  }}
+                />
+              }
               onPointerDown={(e) => {
                 e.stopPropagation();
               }}
@@ -113,15 +148,25 @@ const ProjectCard = ({ id, title, dueDate, users }: ProjectCardProps) => {
         <div
           style={{
             display: "flex",
-            alignItems: "center",
             flexWrap: "wrap",
+            alignItems: "center",
             gap: "8px",
           }}
         >
-          <TextIcon style={{ marginRight: "4px" }} />
+          <TextIcon
+            style={{
+              marginRight: "4px",
+            }}
+          />
           {dueDateOptions && (
             <Tag
-              icon={<ClockCircleOutlined style={{ fontSize: "12px" }} />}
+              icon={
+                <ClockCircleOutlined
+                  style={{
+                    fontSize: "12px",
+                  }}
+                />
+              }
               style={{
                 padding: "0 4px",
                 marginInlineEnd: "0",
@@ -134,7 +179,6 @@ const ProjectCard = ({ id, title, dueDate, users }: ProjectCardProps) => {
               {dueDateOptions.text}
             </Tag>
           )}
-
           {!!users?.length && (
             <Space
               size={4}
@@ -145,14 +189,16 @@ const ProjectCard = ({ id, title, dueDate, users }: ProjectCardProps) => {
                 display: "flex",
                 justifyContent: "flex-end",
                 marginLeft: "auto",
-                marginRight: 0,
+                marginRight: "0",
               }}
             >
-              {users.map((user) => (
-                <Tooltip key={user.id} title={user.name}>
-                  <CustomAvatar name={user.name} src={user.avatarUrl} />
-                </Tooltip>
-              ))}
+              {users.map((user) => {
+                return (
+                  <Tooltip key={user.id} title={user.name}>
+                    <CustomAvatar name={user.name} src={user.avatarUrl} />
+                  </Tooltip>
+                );
+              })}
             </Space>
           )}
         </div>
@@ -161,7 +207,37 @@ const ProjectCard = ({ id, title, dueDate, users }: ProjectCardProps) => {
   );
 };
 
-export default ProjectCard;
+export const ProjectCardSkeleton = () => {
+  return (
+    <Card
+      size="small"
+      bodyStyle={{
+        display: "flex",
+        justifyContent: "center",
+        gap: "8px",
+      }}
+      title={
+        <Skeleton.Button
+          active
+          size="small"
+          style={{
+            width: "200px",
+            height: "22px",
+          }}
+        />
+      }
+    >
+      <Skeleton.Button
+        active
+        size="small"
+        style={{
+          width: "200px",
+        }}
+      />
+      <Skeleton.Avatar active size="small" />
+    </Card>
+  );
+};
 
 export const ProjectCardMemo = memo(ProjectCard, (prev, next) => {
   return (

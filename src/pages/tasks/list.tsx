@@ -1,22 +1,33 @@
-import { KanbanColumnSkeleton, ProjectCardSkeleton } from "@/components";
-import { KanbanAddCardButton } from "@/components/tasks/kanban/add-card-button";
-import {
-  KanbanBoardContainer,
-  KanbanBoard,
-} from "@/components/tasks/kanban/board";
-import { ProjectCardMemo } from "@/components/tasks/kanban/card";
-import KanbanColumn from "@/components/tasks/kanban/column";
-import KanbanItem from "@/components/tasks/kanban/item";
-import { UPDATE_TASK_STAGE_MUTATION } from "@/graphql/mutations";
-import { TASK_STAGES_QUERY, TASKS_QUERY } from "@/graphql/queries";
-import { TaskStage } from "@/graphql/schema.types";
-import { TasksQuery } from "@/graphql/types";
-import { DragEndEvent } from "@dnd-kit/core";
-import { useList, useNavigation, useUpdate } from "@refinedev/core";
-import { GetFieldsFromList } from "@refinedev/nestjs-query";
 import React from "react";
 
-const List = ({ children }: React.PropsWithChildren) => {
+import {
+  type HttpError,
+  useList,
+  useNavigation,
+  useUpdate,
+} from "@refinedev/core";
+import type { GetFieldsFromList } from "@refinedev/nestjs-query";
+
+import type { DragEndEvent } from "@dnd-kit/core";
+
+import type { TaskUpdateInput } from "@/graphql/schema.types";
+import type { TasksQuery, TaskStagesQuery } from "@/graphql/types";
+import { TASK_STAGES_QUERY, TASKS_QUERY } from "@/graphql/queries";
+import { UPDATE_TASK_STAGE_MUTATION } from "@/graphql/mutations";
+import {
+  KanbanBoard,
+  KanbanBoardContainer,
+} from "@/components/tasks/kanban/board";
+import KanbanColumn from "@/components/tasks/kanban/column";
+import KanbanItem from "@/components/tasks/kanban/item";
+import { ProjectCardMemo } from "@/components/tasks/kanban/card";
+import { KanbanAddCardButton } from "@/components/tasks/kanban/add-card-button";
+import { KanbanColumnSkeleton, ProjectCardSkeleton } from "@/components";
+
+type Task = GetFieldsFromList<TasksQuery>;
+type TaskStage = GetFieldsFromList<TaskStagesQuery> & { tasks: Task[] };
+
+const TaskList = ({ children }: React.PropsWithChildren) => {
   const { replace } = useNavigation();
 
   const { data: stages, isLoading: isLoadingStages } = useList<TaskStage>({
@@ -80,7 +91,7 @@ const List = ({ children }: React.PropsWithChildren) => {
     };
   }, [tasks, stages]);
 
-  const { mutate: updateTask } = useUpdate({
+  const { mutate: updateTask } = useUpdate<Task, HttpError, TaskUpdateInput>({
     resource: "tasks",
     mutationMode: "optimistic",
     successNotification: false,
@@ -115,6 +126,7 @@ const List = ({ children }: React.PropsWithChildren) => {
       args.stageId === "unassigned"
         ? "/tasks/new"
         : `/tasks/new?stageId=${args.stageId}`;
+
     replace(path);
   };
 
@@ -192,7 +204,7 @@ const List = ({ children }: React.PropsWithChildren) => {
   );
 };
 
-export default List;
+export default TaskList;
 
 const PageSkeleton = () => {
   const columnCount = 6;
@@ -200,13 +212,15 @@ const PageSkeleton = () => {
 
   return (
     <KanbanBoardContainer>
-      {Array.from({ length: columnCount }).map((_, index) => (
-        <KanbanColumnSkeleton key={index}>
-          {Array.from({ length: itemCount }).map((_, index) => (
-            <ProjectCardSkeleton key={index} />
-          ))}
-        </KanbanColumnSkeleton>
-      ))}
+      {Array.from({ length: columnCount }).map((_, index) => {
+        return (
+          <KanbanColumnSkeleton key={index}>
+            {Array.from({ length: itemCount }).map((_, index) => {
+              return <ProjectCardSkeleton key={index} />;
+            })}
+          </KanbanColumnSkeleton>
+        );
+      })}
     </KanbanBoardContainer>
   );
 };

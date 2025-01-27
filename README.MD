@@ -11,7 +11,7 @@ This project is a **React Admin Dashboard** built with [Refine], designed for re
 
 ## Deploy link
 
-admin-dashboard-seven-olive.vercel.app
+https://admin-dashboard-seven-olive.vercel.app/
 
 ## Features
 - **Real-Time Data**: Dynamic updates and synchronization.
